@@ -1,0 +1,29 @@
+{
+  "name": "todo-hunter",
+  "version": "1.0.0",
+  "description": "Find and resolve all TODOs with AI",
+  "type": "module",
+  "bin": {
+    "todo-hunter": "./bin/hunt.js"
+  },
+  "scripts": {
+    "start": "node bin/hunt.js",
+    "lint": "node --check src/*.js bin/hunt.js"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^12.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "todo",
+    "fixme",
+    "code-quality",
+    "cli",
+    "developer-tools"
+  ],
+  "author": "NickCirv <nick@cirvgreen.com>",
+  "license": "MIT"
+}
