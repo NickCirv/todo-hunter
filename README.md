@@ -1,3 +1,5 @@
+![Banner](banner.svg)
+
 # todo-hunter
 
 Hunt down every TODO, FIXME, HACK, and XXX in your codebase — with priorities, categories, and git blame.
