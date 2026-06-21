@@ -8,14 +8,15 @@
   },
   "scripts": {
     "start": "node bin/hunt.js",
-    "lint": "node --check src/*.js bin/hunt.js"
+    "lint": "node --check src/*.js bin/hunt.js",
+    "test": "node --test"
   },
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^12.1.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20"
   },
   "keywords": [
     "todo",
