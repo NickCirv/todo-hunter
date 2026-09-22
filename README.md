@@ -1,124 +1,83 @@
-![todo-hunter — surface every TODO, FIXME, and HACK in your codebase, prioritized and blamed](assets/banner.png)
+![todo-hunter — Nicholas Ashkar editorial artwork](assets/nicholas-ashkar/banner.png)
 
-<div align="center">
+# todo-hunter
 
-**Hunt down every TODO, FIXME, and HACK in your codebase — with priority triage, git blame, and orphaned-author detection.**
+Inventory TODO-style comments and organize them into a reviewable technical-debt report.
 
-![license](https://img.shields.io/badge/license-MIT-blue?labelColor=0B0A09)
-![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen?labelColor=0B0A09)
-![languages](https://img.shields.io/badge/languages-15%2B-8B92F6?labelColor=0B0A09)
-![keywords](https://img.shields.io/badge/comment%20keywords-9-8B92F6?labelColor=0B0A09)
+Scans supported extensions, assigns local keyword-based type/priority labels and optionally enriches comments with Git author/age information.
 
-</div>
 
----
+<a id="install"></a>
 
-Most tools just list TODOs. `todo-hunter` goes further: it auto-categorizes each comment (`bug` / `tech-debt` / `feature` / `optimization`), assigns a priority (P1–P4), runs `git blame` to surface who wrote it and how long ago, and flags items from authors who no longer contribute. Now you can actually triage the list instead of ignoring it.
+## Quickstart
 
-```
-$ npx github:NickCirv/todo-hunter scan ./src
-
-Scanning ./src...
-
-  src/auth/session.ts:142
-  [P1] [bug] FIXME: token refresh fails silently when refresh_token is expired
-  Author: alice@example.com  ·  34 days ago
-
-  src/payments/stripe.js:89
-  [P2] [tech-debt] HACK: retry logic bypasses the queue — causes duplicate charges on timeout
-  Author: bob@example.com  ·  180 days ago  ·  ⚠ orphaned
-
-  src/api/users.ts:203
-  [P3] [feature] TODO: add pagination support for /users endpoint
-  Author: carol@example.com  ·  12 days ago
-
-  Found 47 items  ·  3 P1  ·  12 P2  ·  28 P3  ·  4 P4
-```
-
-## Install
-
-No npm account needed — runs straight from GitHub:
+Package runtime requirement: Node.js `>=20`. Git is needed to obtain this pinned source checkout.
 
 ```bash
-npx github:NickCirv/todo-hunter scan
+git clone https://github.com/NickCirv/todo-hunter.git
+cd todo-hunter
+git checkout ab90c08ff9bd781e386ad3c37171fd973d086fb2
+npm install --ignore-scripts
+node bin/hunt.js scan . --no-blame --output json
 ```
+
+This source-derived example has not been executed in this review. The command prints recognized comments without Git blame queries. Empty output does not establish the absence of unfinished work.
+
+
+
+
+
+
+
+<a id="commands"></a>
+
+<a id="scan-dir"></a>
+
+<a id="stats-dir"></a>
+
+<a id="report-dir"></a>
+
+<a id="blame-dir"></a>
+
+<a id="what-it-detects"></a>
 
 ## Usage
 
 ```bash
-# Scan current directory
-npx github:NickCirv/todo-hunter scan
-
-# Scan a specific path
-npx github:NickCirv/todo-hunter scan ./src
-
-# Stats dashboard — category and priority breakdown
-npx github:NickCirv/todo-hunter stats
-
-# Prioritized report, filter by level
-npx github:NickCirv/todo-hunter report --priority P1
-
-# Filter by type
-npx github:NickCirv/todo-hunter report --type bug
-
-# Who wrote all these TODOs? Show ancient and orphaned items
-npx github:NickCirv/todo-hunter blame --ancient
+node bin/hunt.js stats ./src
+node bin/hunt.js report ./src --priority P1
+node bin/hunt.js blame ./src --ancient
 ```
 
-## Commands
+`scan --output` accepts table/json/csv. `--ext` chooses extensions. `--orphaned` uses the tool’s recent-author heuristic.
 
-### `scan [dir]`
+[Command reference](docs/REFERENCE.md) covers arguments, modes and output controls.
 
-Scan for all TODO-style comments and display results.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `-e, --ext <extensions>` | Comma-separated file extensions | `js,ts,jsx,tsx,py,go,rb,java,php,cs,cpp,c,rs,swift,kt` |
-| `--no-blame` | Skip git blame (faster) | blame enabled |
-| `-o, --output <format>` | Output format: `table`, `json`, `csv` | `table` |
+<a id="what-it-is-not"></a>
 
-### `stats [dir]`
+## Behavior and limits
 
-Dashboard showing category and priority breakdown across the whole codebase.
+Despite the package description’s AI wording, the inspected commands scan, classify and report; they do not use an AI service to resolve TODOs. Priority/type labels are rules, not owner-confirmed urgency. A contributor absent from a 90-day log is not proof that a task is unowned.
 
-### `report [dir]`
+## Development
 
-Detailed prioritized report with filtering.
+Declared package scripts:
 
-| Option | Description |
-|--------|-------------|
-| `-p, --priority <level>` | Filter by priority: `P1`, `P2`, `P3`, `P4` |
-| `-t, --type <type>` | Filter by type: `bug`, `tech-debt`, `feature`, `optimization`, `question` |
+| Script | Command |
+| --- | --- |
+| `start` | `node bin/hunt.js` |
+| `lint` | `node --check src/*.js bin/hunt.js` |
+| `test` | `node --test` |
 
-### `blame [dir]`
+The smoke test syntax-checks the entrypoint; it does not exercise CLI behavior or integrations.
 
-Show authorship, age, and orphaned items.
+## Research
 
-| Option | Description |
-|--------|-------------|
-| `--ancient` | Show only TODOs older than 90 days |
-| `--orphaned` | Show only TODOs from authors no longer active |
+[Source review and claim ledger](docs/RESEARCH.md) records revision `ab90c08ff9bd`, inspected files and verification gaps.
 
-## What it detects
+## License and attribution
 
-| Keyword | Priority | Category |
-|---------|----------|----------|
-| `FIXME`, `BUG` | P1 | bug |
-| `HACK`, `XXX`, `REFACTOR`, `OPTIMIZE` | P2 | tech-debt / optimization |
-| `TODO` | P3 | feature / general |
-| `PERF` | P2 | optimization |
-| `NOTE` | P4 | note |
+Protected license and attribution files remain unchanged: [LICENSE](https://github.com/NickCirv/todo-hunter/blob/ab90c08ff9bd781e386ad3c37171fd973d086fb2/LICENSE).
 
-Scans JS, TS, JSX, TSX, Python, Go, Ruby, Java, PHP, C#, C++, C, Rust, Swift, Kotlin — and more. Skips `node_modules`, `.git`, `dist`, `build`, `coverage`, `__pycache__` automatically. Shows 2 lines of context around each match.
-
-## What it is NOT
-
-- **Not a linter or static analysis tool.** It surfaces comment markers only — it doesn't analyze runtime behavior or code correctness.
-- **Not a task manager.** It reads comments from source files; it doesn't write back, close tickets, or sync with Jira/GitHub Issues.
-- **Not a guarantee of completeness.** Detection is keyword-based: custom markers or non-standard spellings won't be caught unless they match the known keyword set.
-
----
-
-<div align="center">
-<sub>Node 18+ · MIT · by <a href="https://github.com/NickCirv">NickCirv</a></sub>
-</div>
+[Artwork credits](assets/nicholas-ashkar/CREDITS.md) · [Nicholas Ashkar — consulting](https://nicholashkar.com/#oxblood-contact)
